@@ -1,0 +1,55 @@
+---
+- name: Updating apt cache
+  apt:
+    update_cache: yes
+
+- name: Installing required packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python-setuptools
+    - nginx
+
+#- name: Download pip installer
+#  get_url:
+#    url: https://bootstrap.pypa.io/get-pip.py
+#    dest: /tmp/get-pip.py
+#    mode: 0440
+#
+#- name: Install pip by get-pip.py
+#  command: /usr/bin/python /tmp/get-pip.py
+#
+#- name: Delete get-pip.py after installed
+#  file:
+#    state: absent
+#    path: /tmp/get-pip.py
+
+- name: Install pip by easy_install
+  easy_install: name=pip state=latest
+
+- name: Upgrade pip and setuptools packages
+  pip:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - pip
+    - setuptools
+
+- name: Install pip packages
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - virtualenv
+
+- name: Initial virtualenv
+  command: virtualenv {{ pip_virtualenv_path }} -p python2.7
+  args:
+    creates: "{{ pip_virtualenv_path }}"
+
+- name: Install requirements
+  pip: 
+    requirements: "https://bitbucket.org/pypa/bandersnatch/raw/stable/requirements.txt"
+    virtualenv: "{{ pip_virtualenv_path }}"
+    virtualenv_python: python2.7

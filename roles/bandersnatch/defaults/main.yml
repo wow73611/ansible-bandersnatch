@@ -1,0 +1,4 @@
+---
+pip_virtualenv_path: /root/bandersnatch
+pip_mirror_base_path: /srv/pypi
+nginx_root_directory: /usr/share/nginx/html

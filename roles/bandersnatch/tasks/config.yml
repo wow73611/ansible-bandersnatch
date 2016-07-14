@@ -1,0 +1,54 @@
+---
+#- name: Coping 
+#  command: "cp lib/python2.7/site-packages/bandersnatch/default.conf /etc/bandersnatch.conf"
+
+- name: Coping /etc/bandersnatch.conf
+  template:
+    src: "etc/bandersnatch.conf"
+    dest: "/etc/bandersnatch.conf"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Coping /etc/cron.d/bandersnatch
+  template:
+    src: "etc/cron.d/bandersnatch"
+    dest: "/etc/cron.d/bandersnatch"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Coping /etc/nginx/sites-available/bandersnatch
+  template:
+    src: "etc/nginx/sites-available/bandersnatch.j2"
+    dest: "/etc/nginx/sites-available/bandersnatch"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enabling apt-mirror virtual host for nginx
+  file:
+    src: "/etc/nginx/sites-available/bandersnatch"
+    dest: "/etc/nginx/sites-enabled/bandersnatch"
+    force: yes
+    state: link
+
+- name: Disabling default virtual host for nginx
+  file:
+    path: "/etc/nginx/sites-enabled/default"
+    state: absent
+
+- name: Creating symbolic link of nginx/html/ubuntu
+  file:
+    src: "{{ pip_mirror_base_path }}/web"
+    dest: "{{ nginx_root_directory }}/pypi"
+    force: yes
+    state: link
+
+- name: Restarting cron and nginx service
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - cron
+    - nginx

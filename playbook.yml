@@ -1,0 +1,6 @@
+---
+- name: Deploy bandersnatch service
+  hosts: all
+  #strategy: free
+  roles:
+    - bandersnatch

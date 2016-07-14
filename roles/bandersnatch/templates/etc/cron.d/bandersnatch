@@ -1,0 +1,5 @@
+LC_ALL=en_US.utf8
+SHELL=/bin/bash
+
+0  4    * * *   root    source {{ pip_virtualenv_path }}/bin/activate && bandersnatch mirror |& logger -t bandersnatch[mirror]
+

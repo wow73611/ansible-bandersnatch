@@ -1,0 +1,5 @@
+---
+- name: Running bandersnatch mirror
+  shell: "source {{ pip_virtualenv_path }}/bin/activate &&  nohup bandersnatch mirror &"
+  args:
+    executable: /bin/bash
